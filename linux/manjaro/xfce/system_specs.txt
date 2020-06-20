@@ -1,0 +1,33 @@
+$ inxi -Fxz
+
+System:    Host: egide-inspiron153567 Kernel: 5.6.15-1-MANJARO x86_64 bits: 64 compiler: gcc v: 10.1.0 
+           Desktop: Xfce 4.14.2 Distro: Manjaro Linux 
+Machine:   Type: Laptop System: Dell product: Inspiron 15-3567 v: N/A serial: <filter> 
+           Mobo: Dell model: 02DG7R v: A00 serial: <filter> UEFI [Legacy]: Dell v: 2.5.1 
+           date: 05/31/2018 
+Battery:   ID-1: BAT0 charge: 36.3 Wh condition: 36.7/41.4 Wh (89%) model: LGC-LGC2.80 DELL 991XP86 
+           status: Charging 
+CPU:       Topology: Dual Core model: Intel Core i3-7130U bits: 64 type: MT MCP arch: Amber Lake rev: 9 
+           L2 cache: 3072 KiB 
+           flags: avx avx2 lm nx pae sse sse2 sse3 sse4_1 sse4_2 ssse3 vmx bogomips: 21607 
+           Speed: 700 MHz min/max: 400/2700 MHz Core speeds (MHz): 1: 700 2: 700 3: 700 4: 700 
+Graphics:  Device-1: Intel HD Graphics 620 vendor: Dell driver: i915 v: kernel bus ID: 00:02.0 
+           Display: x11 server: X.Org 1.20.8 driver: intel unloaded: modesetting tty: N/A 
+           OpenGL: renderer: Mesa Intel HD Graphics 620 (KBL GT2) v: 4.6 Mesa 20.0.7 direct render: Yes 
+Audio:     Device-1: Intel Sunrise Point-LP HD Audio vendor: Dell driver: snd_hda_intel v: kernel 
+           bus ID: 00:1f.3 
+           Sound Server: ALSA v: k5.6.15-1-MANJARO 
+Network:   Device-1: Qualcomm Atheros QCA9565 / AR9565 Wireless Network Adapter vendor: Dell 
+           driver: ath9k v: kernel port: f040 bus ID: 01:00.0 
+           IF: wlp1s0 state: up mac: <filter> 
+           Device-2: Realtek RTL810xE PCI Express Fast Ethernet vendor: Dell driver: r8169 v: kernel 
+           port: e000 bus ID: 02:00.0 
+           IF: enp2s0 state: down mac: <filter> 
+           Device-3: Qualcomm Atheros type: USB driver: btusb bus ID: 1-8:6 
+Drives:    Local Storage: total: 111.79 GiB used: 4.70 GiB (4.2%) 
+           ID-1: /dev/sda vendor: Kingston model: SA400S37120G size: 111.79 GiB 
+Partition: ID-1: / size: 109.53 GiB used: 4.70 GiB (4.3%) fs: ext4 dev: /dev/sda1 
+Sensors:   System Temperatures: cpu: 45.0 C mobo: 44.0 C 
+           Fan Speeds (RPM): cpu: 0 
+Info:      Processes: 173 Uptime: 20m Memory: 7.55 GiB used: 808.6 MiB (10.5%) Init: systemd Compilers: 
+           gcc: N/A Shell: bash v: 5.0.17 inxi: 3.0.37
