@@ -1,3 +1,4 @@
 https://linuxhint.com/check_command_succeeded_bash/
 https://ryanstutorials.net/bash-scripting-tutorial/bash-functions.php
 https://www.edivaldobrito.com.br/instalar-o-navegador-vivaldi-no-linux/
+https://www.gnu.org/software/bash/manual/bash.pdf[Pag.57]
