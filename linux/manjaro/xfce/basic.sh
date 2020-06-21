@@ -41,13 +41,20 @@ log_finish(){
 }
 
 # Update Pacman
+log_install Pacman_Update
 pacman -Syu --noconfirm
+log_status Pacman_Update
+
+# Web Navigator Vivaldi
+log_install Vivaldi
+su -c "pamac build vivaldi --noconfirm >> $log_file_verbose"
+log_status
 
 # Timeline Restorer
 install timeshift
 
 # Restore point creation
-#timeshift --create --snapshot "born_point" --comments "Initial installation of the operating system" --verbose >> $log_file_verbose
+timeshift --create --snapshot "born_point" --comments "Initial installation of the operating system" --verbose >> $log_file_verbose
 
 # Vim terminal text editor
 install vim
@@ -58,10 +65,6 @@ install code
 # Java
 install jre-openjdk
 install jdk-openjdk
-
-# Web Navigator Vivaldi
-pamac build vivaldi --no-confirm >> $log_file_verbose
-log_status
 
 echo "##########################################" >> $log_file
 printf "##########################################\n" >> $log_file_verbose
