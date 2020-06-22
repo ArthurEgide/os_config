@@ -1,0 +1,10 @@
+{
+    "files.autoSave": "off",
+    "javascript.updateImportsOnFileMove.enabled": "always",
+    "window.zoomLevel": 0,
+    "workbench.list.multiSelectModifier": "alt",
+    "editor.suggestSelection": "first",
+    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+    "java.home": "/usr/lib/jvm/jdk-11.0.7+10",
+    "java.semanticHighlighting.enabled": true
+}
