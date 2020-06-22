@@ -12,16 +12,23 @@ user_home=$1
 success=0
 fails=0
 source $config_file
-
-echo "O usuário é o $user_home"
+chmod -R 777 .config/
 
 install() {
-  log_install ${1}
+  log_base ${1}
   pacman -Sy ${1} --noconfirm --verbose >> $log_file_verbose
   log_status ${2}
 }
 
-log_install () {
+remove(){
+  if [ ${!1} = "1" ]; then
+    log_base ${1}
+    sudo pacman -Rsu ${2} --noconfirm >> $log_file_verbose
+    log_status ${2} "remove"
+  fi
+}
+
+log_base () {
   echo "##########################################" >> $log_file
   printf "## ${1} " >> $log_file
 
@@ -37,8 +44,16 @@ log_status(){
       add_config $1 
     fi
   else
-    printf "[FAIL]\n" >> $log_file
-    fails=$((fails+1))
+    if [ ${2} ]; then 
+      printf "[OK]\n" >> $log_file
+      success=$((success+1))
+      if [ ${1} ]; then 
+        add_config $1 "remove"
+      fi
+    else
+      printf "[FAIL]\n" >> $log_file
+      fails=$((fails+1))
+    fi
   fi
 }
 
@@ -52,7 +67,11 @@ add_config(){
   if [ ${!1} ]; then
     echo "[INFO] ${1} Already configured!"
   else
-    echo "${1}=1" >> $config_file
+    if [ ${2} ]; then 
+      echo "${1}=0" >> $config_file
+    else
+      echo "${1}=1" >> $config_file
+    fi
   fi
 }
 
@@ -136,7 +155,7 @@ install tmux
 create_restore_point "born_point" "Initial installation of the operating system"
 
 # Web Navigator Vivaldi
-log_install Vivaldi
+log_base Vivaldi
 su -c "pamac build vivaldi --noconfirm >> $log_file_verbose"
 log_status web_browser
 
@@ -148,8 +167,8 @@ add_config terminal_text_editor
 install code
 
 # VSCode Config
-cp -r .config/Code/User/ ~/.config/Code\ -\ OSS/
-chmod -r 775 ~/.config/Code\ -\ OSS/User
+yes | cp -r ".config/Code/User/" "/home/${user_home}/.config/Code - OSS"
+chmod -R 775 "/home/${user_home}/.config/Code - OSS"
 code --install-extension dracula-theme.theme-dracula
 code --install-extension Gruntfuggly.todo-tree
 code --install-extension aaron-bond.better-comments
@@ -179,11 +198,19 @@ then
   user_interact "Need to reboot. Want do this now? [y/n]"
   if [ $user_answer = "y" -o $user_answer = "s" ]
   then
-    log_install reboot
+    log_base reboot
     log_status reboot
     reboot
   fi
 fi
+
+# Removing programs
+
+pacman -Rs $(pacman -Qdtq) --noconfirm
+
+remove text_editor mousepad
+remove terminal_text_editor nano
+remove web_browser midori
 
 echo "##########################################" >> $log_file
 printf "##########################################\n" >> $log_file_verbose
