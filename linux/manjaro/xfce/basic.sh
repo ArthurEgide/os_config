@@ -8,9 +8,12 @@ printf " You need to run with adminstrator permissions. Run 'sudo bash basic.sh'
 log_file_verbose="log_basic_verbose.txt"
 log_file="log_basic.txt"
 config_file="user.conf"
+user_home=$1
 success=0
 fails=0
 source $config_file
+
+echo "O usuário é o $user_home"
 
 install() {
   log_install ${1}
@@ -55,7 +58,7 @@ add_config(){
 
 create_restore_point(){
   add_config ${1}
-  if [ ${!1} = "1" ]; then
+  if [ ${!1} ]; then
     echo "[INFO] ${1} already exist, check 'sudo timeshift --list'"
   else
     timeshift --create --snapshot ${1} --comments ${2} --verbose >> $log_file_verbose    
@@ -64,9 +67,42 @@ create_restore_point(){
 
 user_interact(){
   echo "=-=-=  =-=-=  =-=-=  =-=-=  =-=-=  =-=-=  =-=-=  =-=-=  =-=-=  =-=-="
-  echo "::: ${1}"
+  echo ">>>>> ${1}"
   echo "=-=-=  =-=-=  =-=-=  =-=-=  =-=-=  =-=-=  =-=-=  =-=-=  =-=-=  =-=-="
+  printf ":"
   read user_answer
+}
+
+configure_git(){
+  
+  if [ ${git_config} ]; then
+    echo "[INFO] Git Already configured!"
+  else
+    user_interact "Git user.name. Enter your name: "
+    git config --global user.name "${user_answer}"
+
+    user_interact "Git user.email. Enter your email: "
+    git config --global user.email "${user_answer}"
+
+    echo ":::::::::::::::::::::::::::::::::"
+    echo ":::::::::::::::::::::::::::::::::"
+    echo ":::::::::::::::::::::::::::::::::"
+    echo ""
+    echo "Your informations"
+    echo ""
+    echo "git.name : $(git config --global user.name)"
+    echo "git.email: $(git config --global user.email)"
+    echo ":::::::::::::::::::::::::::::::::"
+    echo ":::::::::::::::::::::::::::::::::"
+    echo ":::::::::::::::::::::::::::::::::"
+    user_interact "Confirm ?[y/n]"
+    if [ ${user_answer:0:1} = "y" -o ${user_answer:0:1} = "s" ]; then
+      git config --global core.editor vim
+      add_config git_config
+    else 
+      configure_git
+    fi
+  fi
 }
 
 # Update Pacman
@@ -75,19 +111,48 @@ pacman -Syu --noconfirm
 # Timeline Restorer
 install timeshift
 
+# Git
+install git
+
+# Git configure
+configure_git
+
+# SSH Key Configure
+if [ ${ssh_config} ]; then
+    echo "[INFO] SSH-Key Already configured!"
+else
+  rm -r /home/$user_home/.ssh
+  mkdir /home/$user_home/.ssh
+  ssh-keygen -t rsa -b 4096 -C $(git config --global user.email) -f /home/$user_home/.ssh/id_rsa
+  eval `ssh-agent -s`
+  ssh-add /home/$user_home/.ssh/id_rsa
+  add_config ssh_config
+fi
+
+# Multiplex Terminal
+install tmux
+
 # Restore point creation
 create_restore_point "born_point" "Initial installation of the operating system"
 
 # Web Navigator Vivaldi
 log_install Vivaldi
 su -c "pamac build vivaldi --noconfirm >> $log_file_verbose"
-log_status
+log_status web_browser
 
 # Vim terminal text editor
 install vim
+add_config terminal_text_editor
 
 # Main text editor for Visual Studio Code development
 install code
+
+# VSCode Config
+cp -r .config/Code/User/ ~/.config/Code\ -\ OSS/
+chmod -r 775 ~/.config/Code\ -\ OSS/User
+code --install-extension dracula-theme.theme-dracula
+code --install-extension Gruntfuggly.todo-tree
+code --install-extension aaron-bond.better-comments
 
 # Java JRE and JDK
 install jre-openjdk
@@ -99,12 +164,21 @@ install telegram-desktop
 # Mouse support [!] Need Reboot [!]
 install xf86-input-synaptics input_driver
 
+# Text Editor for notes
+install kate
+add_config text_editor
+
 # Restore point post install
 create_restore_point "basic" "Basic user toolkit installed"
 
-if [ $input_driver -ne 1 ]; then
+# Clipboard handler
+install xclip
+
+if [ $input_driver != "1" ]
+then
   user_interact "Need to reboot. Want do this now? [y/n]"
-  if [ $user_answer = "y" -o $user_answer = "s" ]; then
+  if [ $user_answer = "y" -o $user_answer = "s" ]
+  then
     log_install reboot
     log_status reboot
     reboot
