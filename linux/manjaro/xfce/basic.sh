@@ -156,7 +156,7 @@ create_restore_point "born_point" "Initial installation of the operating system"
 
 # Web Navigator Vivaldi
 log_base Vivaldi
-su -c "pamac build vivaldi --noconfirm >> $log_file_verbose"
+su -c "pamac build vivaldi --no-confirm >> $log_file_verbose"
 log_status web_browser
 
 # Vim terminal text editor
