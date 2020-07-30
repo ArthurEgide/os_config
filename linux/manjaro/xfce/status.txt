@@ -1,0 +1,11 @@
+git_config=1
+ssh_config=1
+born_point=0
+web_browser=1
+terminal_text_editor=1
+input_driver=1
+text_editor=1
+basic=1
+mousepad=0
+nano=0
+midori=0
