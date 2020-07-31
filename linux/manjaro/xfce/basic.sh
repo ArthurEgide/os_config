@@ -11,6 +11,7 @@ chmod -R 777 .config/
 # Todas as funções utilizadas, para ficar mais limpo o código
 source "functions.sh"
 source "status.txt"
+source "user.conf"
 
 # Update Pacman
 pacman -Syu --noconfirm
@@ -41,11 +42,6 @@ install tmux
 
 # Restore point creation
 create_restore_point "born_point" "Initial installation of the operating system"
-
-# Web Navigator Vivaldi
-log_base Vivaldi
-su -c "pamac build vivaldi --no-confirm >> $log_file_verbose"
-log_status web_browser
 
 # Vim terminal text editor
 install vim
