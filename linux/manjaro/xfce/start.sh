@@ -1,13 +1,13 @@
 touch user.conf
 chmod 777 user.conf
 
-echo log_file_verbose="log_debug.txt" > user.conf
+echo 'export OS_CONFIG=$PWD' > user.conf
+echo log_file_verbose="log_debug.txt" >> user.conf
 echo log_file="log.txt" >> user.conf
 
-# Todas as funções utilizadas, para ficar mais limpo o código
+source "user.conf"
 source "functions.sh"
 source "status.txt"
-source "user.conf"
 
 touch $log_file $log_file_verbose
 chmod 777 $log_file $log_file_verbose

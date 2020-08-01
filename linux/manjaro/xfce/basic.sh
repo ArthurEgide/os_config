@@ -9,7 +9,7 @@ user_home=$1
 chmod -R 777 .config/
 
 # Todas as funções utilizadas, para ficar mais limpo o código
-source "functions.sh"
+source "functions.sh" 1
 source "status.txt"
 source "user.conf"
 
@@ -82,6 +82,14 @@ install docker
 
 # Make
 install make
+
+# Snapd
+install snapd
+systemctl start snapd.service
+systemctl restart snapd.service
+
+# Insominia
+snap install insomnia >> $log_file_verbose
 
 #  GitFlow
 git clone https://github.com/petervanderdoes/gitflow-avh.git

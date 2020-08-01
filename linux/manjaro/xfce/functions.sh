@@ -1,31 +1,64 @@
-source "user.conf"
+source "${OS_CONFIG}/user.conf"
+
+if [ ${1} ];
+  then from=${1};
+  else from=0; # Default 1. User using functions!
+fi
+
+from() {
+  if [ $from -eq 0 ];
+  then echo "user";
+  else echo "script";
+  fi
+}
+
 install() {
-  log_base ${1}
+  log_base ${1} install
   pacman -Sy ${1} --noconfirm --verbose >> $log_file_verbose
   log_status ${2}
 }
 
 remove(){
-  if [ ${!1} = "1" ]; then
-    log_base ${1}
-    sudo pacman -Rsu ${2} --noconfirm >> $log_file_verbose
-    log_status ${2} "remove"
+  
+  if [ $from -eq 0 ];
+  then
+    log_base ${1} remove
+    sudo pacman -Rsu ${1} --noconfirm >> $log_file_verbose
+    log_status ${1} "remove"
+  else
+    if [ ${!1} = "1" ]; 
+    then
+      log_base ${1} remove
+      sudo pacman -Rsu ${2} --noconfirm >> $log_file_verbose
+      log_status ${2} "remove"
+    fi
   fi
 }
 
 log_base () {
-  echo "##########################################" >> $log_file
-  printf "## ${1} " >> $log_file
 
-  echo "##########################################" >> $log_file_verbose
-  printf "## ${1} " >> $log_file_verbose
+    if [ $from -eq 0 ];
+    then 
+      echo "=-=-=-=    ${USER} - ${2} - $(date)   =-=-=-=" >> $log_file
+      printf "## ${1} " >> $log_file
+
+      echo "=-=-=-=     ${USER} - ${2} - $(date)   =-=-=-=" >> $log_file_verbose
+      printf "## ${1} " >> $log_file_verbose
+    else
+        echo "##########################################" >> $log_file
+        printf "## ${1} " >> $log_file
+
+        echo "##########################################" >> $log_file_verbose
+        printf "## ${1} " >> $log_file_verbose
+    fi
+  
 }
 
 log_status(){
   if [ $? -eq 0 ]; then
     printf "[SUCCESS]\n" >> $log_file
     success=$((success+1))
-    if [ ${1} ]; then 
+    if [ ${1} ]; then
       add_config $1 
     fi
   else
@@ -43,6 +76,7 @@ log_status(){
 }
 
 log_finish(){
+  echo "$(date)" >> $log_file
   echo "[SUCESS] $success" >> $log_file
   echo "[FAIL] $fails" >> $log_file
   printf "##########################################\n\n" >> $log_file
