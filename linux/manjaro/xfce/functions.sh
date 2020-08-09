@@ -14,7 +14,7 @@ from() {
 
 install() {
   log_base ${1} install
-  pacman -Sy ${1} --noconfirm --verbose >> $log_file_verbose
+  sudo pacman -Sy ${1} --noconfirm --verbose >> $log_file_verbose
   log_status ${2}
 }
 
@@ -22,15 +22,16 @@ remove(){
   
   if [ $from -eq 0 ];
   then
+    echo "Removing the ${1} software"
     log_base ${1} remove
     sudo pacman -Rsu ${1} --noconfirm >> $log_file_verbose
     log_status ${1} "remove"
   else
     if [ ${!1} = "1" ]; 
-    then
-      log_base ${1} remove
-      sudo pacman -Rsu ${2} --noconfirm >> $log_file_verbose
-      log_status ${2} "remove"
+        then
+        log_base ${1} remove
+        sudo pacman -Rsu ${2} --noconfirm >> $log_file_verbose
+        log_status ${2} "remove"
     fi
   fi
 }
@@ -58,14 +59,14 @@ log_status(){
   if [ $? -eq 0 ]; then
     printf "[SUCCESS]\n" >> $log_file
     success=$((success+1))
-    if [ ${1} ]; then
+    if [ ${1} ] && [ $from -eq 1 ]; then
       add_config $1 
     fi
   else
     if [ ${2} ]; then 
       printf "[OK]\n" >> $log_file
       success=$((success+1))
-      if [ ${1} ]; then 
+      if [ ${1} ] && [ $from -eq 1 ]; then 
         add_config $1 "remove"
       fi
     else
